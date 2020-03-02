@@ -1,0 +1,119 @@
+Machine Learning Intro -1
+
+File Reading(Pandas)
+
+import pandas as pd
+
+dataframe=pd.read_csv("")
+
+dataframe.describe()      -> gives values like average,min,max,std,...
+
+dataframe.columns		-> gives names of all columns 
+
+dataframe.head()		-> gives first few rows
+
+reduced_dataframe=dataframe.dropna(axis=0)		-> axis 0 represents rows, 1 ->columns   
+
+
+Selecting specific columns:
+
+y=dataframe.Price (To pick one column) ( target )
+
+columns=[‘a’, ’b’ , ’c’]
+
+X=dataframe[columns]
+
+
+Modelling( Fit , Predict ) ( DecisionTree )
+
+from sklearn.tree import DecisionTreeRegressor
+
+model = DecisionTreeRegressor(random_state=1)
+
+model.fit(X)
+
+model.predict(X.head(10))
+
+
+Validation
+
+from sklearn.metrics import mean_absolute_error
+
+--------------------------------
+Checking results within the training data is not good way of coding, 
+Checking with new set of data gives better error details.
+So we divide the training data and make one as test and other as train
+The split is based on a random number generator. 
+Supplying a numeric value to the random_state argument guarantees we get the same split every time ._
+--------------------------------
+
+from sklearn.model_selection import train_test_split
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state = 0)
+
+--------------------------------
+overfitting, where a model matches the training data almost perfectly, but does poorly in validation and other new data
+When a model fails to capture important distinctions and patterns in the data, so it performs poorly even in training data, that is called underfitting
+--------------------------------
+
+No of Splits:
+
+model = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes, random_state=0)
+
+if too high : overfitting
+too low : underfitting
+
+people use randomForest than decisiontrees bcz of the above problems :( 
+
+
+Modelling(.Fit, Predict ). (RandomForest)
+
+
+Code Similar to DecisionTree(basically uses diff decision trees of different lengths)
+
+
+from sklearn.ensemble import RandomForestRegressor
+forest_model = RandomForestRegressor(random_state=1)
+.fit()
+.predict()
+
+
+
+————————————————————————————————————————————————————————————————————————
+#Sample Code
+
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
+
+
+iowa_file_path = '../input/train.csv'
+home_data = pd.read_csv(iowa_file_path)
+y = home_data.SalePrice
+features = ['LotArea', 'YearBuilt', '1stFlrSF', '2ndFlrSF','FullBath' ,'BedroomAbvGr', 'MSSubClass','TotRmsAbvGrd','PoolArea','KitchenAbvGr']
+X = home_data[features]
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=1)
+
+# Specify Model
+iowa_model = DecisionTreeRegressor(random_state=1)
+# Fit Model
+iowa_model.fit(train_X, train_y)
+# Make validation predictions and calculate mean absolute error
+val_predictions = iowa_model.predict(val_X)
+val_mae = mean_absolute_error(val_predictions, val_y)
+
+# Using best value for max_leaf_nodes
+iowa_model = DecisionTreeRegressor(max_leaf_nodes=100, random_state=1)
+iowa_model.fit(train_X, train_y)
+val_predictions = iowa_model.predict(val_X)
+val_mae = mean_absolute_error(val_predictions, val_y)
+
+# Define the model. Set random_state to 1
+rf_model = RandomForestRegressor(random_state=1)
+rf_model.fit(train_X, train_y)
+rf_val_predictions = rf_model.predict(val_X)
+rf_val_mae = mean_absolute_error(rf_val_predictions, val_y)
+
+————————————————————————————————————————————————————————————————
+
