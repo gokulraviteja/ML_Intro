@@ -1,0 +1,206 @@
+Pandas Tutorial
+
+import pandas as pd
+
+pd.set_option("display.max_rows", 5)
+
+
+Pandas Datatypes
+
+If a DataFrame is a table, a Series is a list.
+
+df=pd.DataFrame({'Yes': [50, 21], 'No': [131, 2]})
+
+fruit_sales = pd.DataFrame({'Apples':[35,41],'Bananas':[21,34]},index=['2017 Sales','2018 Sales'])
+
+pd.Series([1, 2, 3, 4, 5])
+
+pd.Series([30, 35, 40], index=['2015 Sales', '2016 Sales', '2017 Sales'], name='Product A')		
+
+index	->   names of rows
+
+Reading
+
+df=pd.read_csv(‘ ’ , index_col=0 )		->.  pandas use that column for the index
+
+df.shape
+
+df.head()
+
+Writing
+
+df.to_csv(“ “)
+
+
+Indexing , Selecting , data from a dataframe
+
+
+df.country
+
+df[‘country’]
+
+df[‘country’][0]	-> gives 0th row element of column country    
+
+df.iloc[0]			-> gives info about 0th row
+
+df.iloc[:,0]		-> 0th   column of all rows
+
+df.loc[0,’country’]
+
+df.loc[:, ['taster_name', 'taster_twitter_handle', 'points'] ]
+
+
+
+loc && iloc
+
+loc support indexing with strings
+
+df.loc['Apples':'Potatoes']
+
+
+df.loc[0:10]		->	0,1,2,…….9
+
+df.iloc[0:10]		->	0,1,2,…….9,10
+
+
+
+
+Manipulate Index & Filtering
+
+df.set_index(“title”)
+
+df.loc[df.country == 'Italy']
+
+df.loc[(df.country == 'Italy') & (df.points >= 90)]
+
+df.loc[df.country.isin(['Italy', 'France'])]
+
+df.loc[df.country.notnull()]
+
+df[‘country’] = ‘India’		-> Change all  values of specific column to India
+
+
+
+Playing with Column data
+
+
+df.country.describe()
+
+df.points.mean()
+
+df.points.median()
+
+df.points.unique()
+
+df.head()
+
+df.country.value_counts()
+
+
+mean = df.points.mean()
+
+df.points.map(lambda p: p - mean)
+
+# to transform a colmun  
+def remean_points(row):
+    row.points = row.points - mean
+    return row
+
+df.apply(remean_points, axis='columns')
+
+
+
+ind=(reviews.points/reviews.price).idxmax()
+bargain_wine = reviews.loc[ind,'title']
+
+n_trop = df.columnname.map(lambda desc: "tropical" in desc).sum()
+n_fruity = df.columnname.map(lambda desc: "fruity" in desc).sum()
+
+
+# create a series from dataframe by applying some function to a column elements
+
+
+def remean_points(row):
+    if(row.country=='Canada'):
+        return 3
+    elif(row.points>=95):
+        return 3
+    elif(row.points>=85 and row.points<95):
+        return 2
+    else:
+        return 1
+   
+
+star_ratings=reviews.apply(remean_points, axis='columns')
+
+
+
+Grouping
+
+reviews.groupby('points').points.count()
+
+reviews.groupby('points').price.min()
+
+# TBC
+
+
+
+MissingValues , Types
+
+reviews.price.dtype
+
+
+reviews.dtypes
+
+reviews.points.astype('float64')		Convert to a particular datatype
+
+
+reviews[pd.isnull(reviews.country)]		 gives all rows where country is null
+
+df.country.fillna(“unknown”)
+
+df.country.replace(“gokul”,”buz_er”)
+
+
+reviews.region_1.fillna('Unknown').value_counts().sort_values(ascending=False)
+
+
+Renaming
+
+df.rename(columns={'points': 'score'})
+
+
+
+df.rename(index= {0: ‘row0’})
+
+
+df.rename_axis("wines", axis='rows').rename_axis("fields", axis='columns')
+
+#header names for rows and columns
+
+
+
+Combining
+
+pd.concat([df1, df2])
+
+df= df1.set_index("MeetID").join(df2.set_index("MeetID"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
